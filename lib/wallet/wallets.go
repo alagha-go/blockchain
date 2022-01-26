@@ -97,8 +97,6 @@ func (ws *Wallets) AddWallet() string {
 
 	ws.Wallets[address] = wallet
 
-	fmt.Println(address)
-
 	return address
 }
 
