@@ -45,19 +45,6 @@ func (tx *Transaction) Hash() []byte {
 
 
 
-// func (tx *Transaction) SetID() {
-// 	var encoded bytes.Buffer
-// 	var hash [32]byte
-
-// 	encode := gob.NewEncoder(&encoded)
-// 	err := encode.Encode(tx)
-// 	HandleError(err)
-
-// 	hash = sha256.Sum256(encoded.Bytes())
-// 	tx.ID = hash[:]
-// }
-
-
 
 
 func CoinbaseTx(to, data string) *Transaction {
