@@ -80,10 +80,9 @@ func (cli *CommandLine) createBlockChain(address string) {
 	}
 	chain := blockchain.InitBlockChain(address)
 	defer chain.Database.Close()
+	UTXOSet := blockchain.UTXOSet{chain}
+	UTXOSet.Reindex()
 	fmt.Println("Finished!")
-
-	// time.Sleep(time.Second)
-	// cli.reIndexUtxo()
 }
 
 
