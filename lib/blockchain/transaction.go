@@ -45,6 +45,16 @@ func (tx *Transaction) Hash() []byte {
 
 
 
+func DeserializeTransaction(data []byte) Transaction {
+	var transactin Transaction
+
+	err := gob.NewDecoder(bytes.NewReader(data)).Decode(&transactin)
+	HandleError(err)
+
+	return transactin
+}
+
+
 
 
 func CoinbaseTx(to, data string) *Transaction {
@@ -121,17 +131,14 @@ func (tx *Transaction) Sign(privKey ecdsa.PrivateKey, prevTxs map[string]Transac
 
 
 
-func NewTransaction(from, to string, amount int, UTXO *UTXOSet) *Transaction {
+func NewTransaction(w *wallet.Wallet, to, nodeID string, amount int, UTXO *UTXOSet) *Transaction {
 	var inputs []TxInput
 	var outputs []TxOutput
 
-	wallets, err := wallet.CreateWallets()
-	w := wallets.GetWallet(from)
+	
 	pubKeyHash := wallet.PubKeyHash(w.PublicKey)
 
 	accumulator, validOutputs := UTXO.FindSpendableOutputs(pubKeyHash, amount)
-
-	HandleError(err)
 
 	if accumulator < amount {
 		log.Panic("Error: not enough funds")
@@ -150,7 +157,7 @@ func NewTransaction(from, to string, amount int, UTXO *UTXOSet) *Transaction {
 	outputs = append(outputs, *NewTxOutput(amount, to))
 
 	if accumulator > amount {
-		outputs = append(outputs, *NewTxOutput(accumulator-amount, from))
+		outputs = append(outputs, *NewTxOutput(accumulator-amount, string(w.Address())))
 	}
 
 	tx := Transaction{nil, inputs, outputs}
